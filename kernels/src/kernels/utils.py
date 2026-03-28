@@ -18,7 +18,7 @@ from huggingface_hub import HfApi, constants
 from kernels._system import glibc_version
 from kernels._versions import select_revision_or_version
 from kernels.backends import _backend, _select_backend
-from kernels.compat import has_torch, has_tvm_ffi
+from kernels.compat import has_jax, has_torch, has_tvm_ffi
 from kernels.deps import validate_dependencies
 from kernels.lockfile import KernelLock, VariantLock
 from kernels.metadata import Metadata
@@ -602,6 +602,10 @@ def _get_hf_api(user_agent: str | dict | None = None) -> HfApi:
             import tvm_ffi
 
             user_agent_str += f"; tvm-ffi/{tvm_ffi.__version__}"
+        if has_jax:
+            import jax
+
+            user_agent_str += f"; jax/{jax.__version__}"
 
         # Add glibc version if available
         glibc = glibc_version()
